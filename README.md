@@ -18,6 +18,6 @@ filesize is limited to 255 bytes
 
 file name is limited to 255 bytes
 
-it doesn't have folder support but you can emulate it via filenames, because there is no limitiation on the beside size
+it doesn't have folder support but you can emulate it via filenames, because there is no limitiation on it the beside size
 
 it can only access files by number, so you must iterate yourself if you need to acces by name
