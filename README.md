@@ -5,7 +5,7 @@ Minimal filesystem for EEPROM arduino library
 ## Installation
 * [Download](https://github.com/413j0/arduino-mini-filesystem/archive/master.zip) or clone this repository to `Arduino/libraries/MiniFileSystem`.
 * Restart Arduino IDE.
-* Check the examples.
+* Check the example.
 
 ### Notes:
 
