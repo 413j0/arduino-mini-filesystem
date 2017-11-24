@@ -45,6 +45,11 @@ class Filesystem
     int freeSpace;
 	
 	/**
+     * stores the ammountof space that wont be used
+     */
+    int ignoredSpace;
+	
+	/**
      * stores the current file lenght in bytes
      */
     int currentFileLength;
@@ -75,6 +80,12 @@ class Filesystem
      *
      */
 	Filesystem();
+	
+	/**
+     * Construct a new filesystem with ignored space
+     *
+     */
+	Filesystem(int freeBytes);
 	
 	/**
      * Call after a manual edit of memory or public variable edit on the filesystem

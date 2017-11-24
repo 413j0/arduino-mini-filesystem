@@ -15,6 +15,13 @@
       currentFile = 0;
       Update();
     }
+	
+	Filesystem::Filesystem(int freeBytes)
+	{
+      ignoredSpace = freeBytes;
+	  currentFile = 0;
+      Update();
+	}
     void Filesystem::Update()
     {
       fileCount = EEPROM.read(0);
@@ -24,7 +31,7 @@
         }
         currentNameLength = EEPROM.read(currentFile + 1);
         currentFileLength = EEPROM.read(fileCount + currentFile + 1);
-        freeSpace = EEPROM.length();
+        freeSpace = (EEPROM.length() - ignoredSpace);
         freeSpace = freeSpace - 1;											//minus the file number byte
         for (int i = 0; i < fileCount; i++) {								//iterate trough file count
           freeSpace = freeSpace - EEPROM.read(1 + i);						//minus the file name lenght
@@ -82,7 +89,7 @@
 		Update();
 		int difference =(nameLength + fileLength) -(currentFileLength + currentNameLength);
 		if (difference <= freeSpace) {
-			_MoveBlock(_currentFileStart + currentFileLength , (EEPROM.length() - (freeSpace +1)), difference);
+			_MoveBlock(_currentFileStart + currentFileLength , ((EEPROM.length() - ignoredSpace) - (freeSpace +1)), difference);
 				
 			EEPROM.update((currentFile + 1), nameLength);
 			EEPROM.update((fileCount + currentFile + 1), fileLength);//must update before calling _GetFileStart()
@@ -104,7 +111,7 @@
     {
 	  Update();
       if ((nameLength + fileLength + 2) <= freeSpace) {//return false if the file doesn't fit
-        _MoveBlock((fileCount * 2) + 1, (EEPROM.length() - (freeSpace +1)), 2); //make space for new size definitions
+        _MoveBlock((fileCount * 2) + 1, ((EEPROM.length() - ignoredSpace) - (freeSpace +1)), 2); //make space for new size definitions
         _MoveBlock(fileCount + 1, (fileCount * 2), 1);
 
         EEPROM.update(((fileCount * 2) + 2), fileLength);//set the file size
@@ -136,7 +143,7 @@
 		_MoveBlock(currentFile + 2, (fileCount + currentFile ), -1);
 		_MoveBlock((fileCount + currentFile + 2), _currentNameStart -1, -2);
 		//_MoveBlock(_currentNameStart + currentNameLength + 1, _currentFileStart -1, -2 -currentNameLength);
-		_MoveBlock(_currentFileStart + currentFileLength , (EEPROM.length() - (freeSpace +1)), -2 -currentNameLength -currentFileLength);
+		_MoveBlock(_currentFileStart + currentFileLength , ((EEPROM.length() - ignoredSpace) - (freeSpace +1)), -2 -currentNameLength -currentFileLength);
 		fileCount -= 1;
         EEPROM.update(0, fileCount);
         if (currentFile > 0) {
@@ -159,7 +166,7 @@
     void Filesystem::DeepFormat()
     {
       Format();
-      for (int i = _MINI_FILESYSTEM_BASE_FORMAT_LENGTH; i < EEPROM.length(); i++) {
+      for (int i = _MINI_FILESYSTEM_BASE_FORMAT_LENGTH; i < (EEPROM.length() - ignoredSpace); i++) {
         EEPROM.update(i, 255);
       }
     }
